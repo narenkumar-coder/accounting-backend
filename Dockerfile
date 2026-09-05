@@ -1,14 +1,14 @@
-# Stage 1: Build using Gradle, pointing to your subfolder path
-FROM gradle:7.6-jdk17 AS build
-WORKDIR /app
-COPY . .
-# Unga project iruka subfolder-ku path maathukrom
-WORKDIR /app/Database/manager
-RUN gradle bootJar --no-daemon
-
-# Stage 2: Run the application
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/Database/manager/build/libs/*.jar app.jar
+
+# Copy everything from your subfolder to the container
+COPY Database/manager/ .
+
+# Give permission to gradlew and build the jar using wrapper
+RUN chmod +x gradlew
+RUN ./gradlew bootJar --no-daemon
+
+# Copy the built jar and run it
+RUN cp build/libs/*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]
