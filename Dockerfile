@@ -1,8 +1,8 @@
-# Stage 1: Build the application using Gradle
-FROM eclipse-temurin:17-jdk-alpine AS build
+# Stage 1: Build using pre-installed Gradle (No gradlew needed)
+FROM gradle:7.6-jdk17 AS build
 WORKDIR /app
 COPY . .
-RUN ./gradlew bootJar --no-daemon
+RUN gradle bootJar --no-daemon
 
 # Stage 2: Run the application
 FROM eclipse-temurin:17-jdk-alpine
